@@ -14,3 +14,5 @@ This plugin will help you identify where they are coming from.
 ## Need to say this
 
 Because it's hooking into a lot of stuff, it will make your site slower. Do not use on live site, seriously. You have been warned.
+
+It also does not work if your site uses the `override_load_textdomain` filter as that short circuits the code where setting the constant is defined.
