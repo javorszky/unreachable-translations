@@ -35,6 +35,8 @@ class i10n_Unreachable_Translations {
 
 	public static $constant = 'NAME_YOUR_CONSTANT';
 
+	public static $table_name = 'unreachable_translations';
+
 	public static $plugin_file = __FILE__;
 
 	public static function init() {
@@ -66,8 +68,10 @@ class i10n_Unreachable_Translations {
 			}
 		}
 
+		$table = self::$table_name;
+
 		return array(
-			"CREATE TABLE {$wpdb->prefix}unreachable_translations (
+			"CREATE TABLE {$wpdb->prefix}{$table} (
 			  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 			  `hash` varchar(32) NOT NULL DEFAULT '',
 			  `call` longtext,
@@ -152,8 +156,10 @@ class i10n_Unreachable_Translations {
 
 
 		$hash = md5( json_encode( $relevant[0] ) . $data['call'] );
-		$table = 'translations';
-		$sql = "INSERT INTO {$table} (`hash`, `call`, `translation`, `text`, `single`, `plural`, `context`, `number`, `domain`, `file`, `line`, `function`, `backtrace`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s ) ON DUPLICATE KEY UPDATE called = called + 1";
+
+		$table = self::$table_name;
+
+		$sql = "INSERT INTO {$wpdb->prefix}{$table} (`hash`, `call`, `translation`, `text`, `single`, `plural`, `context`, `number`, `domain`, `file`, `line`, `function`, `backtrace`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s ) ON DUPLICATE KEY UPDATE called = called + 1";
 
 		$sql = $wpdb->prepare( $sql, array( $hash, $data['call'], $data['translation'], $data['text'], $data['single'], $data['plural'], $data['context'], $data['number'], 'woocommerce-subscriptions', $relevant[0]['file'], $relevant[0]['line'], $relevant[0]['function'], maybe_serialize( $data['backtrace'] ) ) );
 		$wpdb->query( $sql );
